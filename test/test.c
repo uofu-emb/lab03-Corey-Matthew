@@ -4,6 +4,8 @@
 #include <unity.h>
 #include "unity_config.h"
 
+#include "count.h"
+
 void setUp(void) {}
 
 void tearDown(void) {}
