@@ -7,19 +7,20 @@
 #include <FreeRTOS.h>
 #include "count.h"
 
-void setUp(void) {}
+SemaphoreHandle_t semaphore;
+
+void setUp(void) {
+    semaphore = xSemaphoreCreateCounting(1, 1);
+}
 
 void tearDown(void) {}
 
 void test_semaphore_timeout_double_plus1() {
-    SemaphoreHandle_t semaphore;
     // Starve the test function so it times out (simulates another thread having it)
     xSemaphoreTake(semaphore, portMAX_DELAY);
-    printf("Semaphore taken\n");
 
     int count = 1;
     bool success = double_plus1_and_print(&count, &semaphore);
-    printf("Returned\n");
     xSemaphoreGive(semaphore);
 
     TEST_ASSERT_FALSE_MESSAGE(success, "Count was not properly locked, did not timeout.");
@@ -27,7 +28,6 @@ void test_semaphore_timeout_double_plus1() {
 }
 
 void test_semaphore_timeout_increment() {
-    SemaphoreHandle_t semaphore;
     // Starve the test function so it times out (simulates another thread having it)
     xSemaphoreTake(semaphore, portMAX_DELAY);
 
@@ -40,7 +40,6 @@ void test_semaphore_timeout_increment() {
 }
 
 void test_double_plus1() {
-    SemaphoreHandle_t semaphore;
     int count = 2;
 
     bool success = double_plus1_and_print(&count, &semaphore);
@@ -50,7 +49,6 @@ void test_double_plus1() {
 }
 
 void test_increment() {
-    SemaphoreHandle_t semaphore;
     int count = 2;
 
     bool success = print_and_increment(&count, &semaphore);
