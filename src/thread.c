@@ -24,7 +24,7 @@ void side_thread(void *params)
 	while (1) {
         vTaskDelay(100);
 
-        double_plus1_and_print(&counter, &semaphore);
+        print_and_increment(&counter, &semaphore);
 	}
 }
 

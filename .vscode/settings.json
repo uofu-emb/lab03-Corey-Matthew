@@ -39,6 +39,7 @@
     "raspberry-pi-pico.python3Path": "${HOME}/.pico-sdk/python/3.12.1/python.exe",
     "files.associations": {
         "count.h": "c",
-        "unity_config.h": "c"
+        "unity_config.h": "c",
+        "semphr.h": "c"
     }
 }
