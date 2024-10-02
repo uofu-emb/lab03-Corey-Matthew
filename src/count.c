@@ -36,3 +36,38 @@ void deadlock_thread(void *params)
     }
     xSemaphoreGive(deadlock_info->a);
 }
+
+void orphaned_lock_thread(void *params) {
+    orphaned_lock_data_t *orphaned_lock_data = (orphaned_lock_data_t*)params;
+
+    orphaned_lock_data->output = orphaned_lock_data->input;
+
+    for (int i = 0; i < 5; i++) {
+        xSemaphoreTake(orphaned_lock_data->a, portMAX_DELAY);
+        orphaned_lock_data->output++;
+        if (orphaned_lock_data->output % 2) {
+            continue;
+        }
+        printf("Count %d\n", orphaned_lock_data->output);
+        xSemaphoreGive(orphaned_lock_data->a);
+    }
+}
+
+void unorphaned_lock_thread(void *params) {
+    orphaned_lock_data_t *orphaned_lock_data = (orphaned_lock_data_t*)params;
+
+    orphaned_lock_data->output = orphaned_lock_data->input;
+
+    for (int i = 0; i < 5; i++) {
+        xSemaphoreTake(orphaned_lock_data->a, portMAX_DELAY);
+        orphaned_lock_data->output++;
+        if (orphaned_lock_data->output % 2) {
+            xSemaphoreGive(orphaned_lock_data->a);
+            continue;
+        }
+        printf("Count %d\n", orphaned_lock_data->output);
+        xSemaphoreGive(orphaned_lock_data->a);
+    }
+
+    vTaskDelete(NULL);
+}
